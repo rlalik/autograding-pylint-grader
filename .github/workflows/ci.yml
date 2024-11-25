@@ -15,7 +15,7 @@ jobs:
           max-score: 1
           files: tests/*.py runner/*.py
       - name: Decode and assert pylint-check
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7.0.1
         with:
           github-token: ${{ github.token || 'act' }}
           script: |
@@ -28,3 +28,9 @@ jobs:
                  !json["tests"][0]["name"]) {
               throw new Error(`Assertion failed. Expected version, status, and test name to exist, but got '${decodedResult}'`);
             }
+      - name: Autograding Reporter
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          PYLINT-CHECK_RESULTS: "${{steps.pylint-check.outputs.result}}"
+        with:
+          runners: pylint-check

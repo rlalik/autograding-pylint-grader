@@ -3,7 +3,7 @@
 root=${root:-"/opt/test-runner"}
 export PYTHONPATH="$root:$PYTHONPATH"
 
-mkdir autograding_output
+mkdir -p autograding_output
 
 for arg in "$@"; do
   case "$arg" in

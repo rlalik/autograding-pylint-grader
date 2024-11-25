@@ -1,5 +1,5 @@
 name: "GitHub Classroom Python Pylint Grader"
-author: "Rafał Lalik (rafallalik@gmail.com)"
+author: "Rafał Lalik (Rafal.Lalik@uj.edu.pl)"
 description: "A plugin for GitHub Classroom's Autograder using pylint to score student code quality."
 inputs:
   timeout:

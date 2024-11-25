@@ -1,23 +1,16 @@
 name: Release
 on:
   workflow_dispatch:
-  
+
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: releases/v1
-          fetch-depth: 0
       - name: Git config
         run: |
-          git config user.name autograding-release-bot
-          git config user.email autograding-release-bot+education@github.com
-      - name: Run build and commit to releases/v1
-        run: |
-          git reset --hard origin/main
-          git push -f origin releases/v1
+          git config user.name "Rafał Lalik"
+          git config user.email rafal.lalik@uj.edu.pl
       - name: Tag and push v1
         run: |
           git tag -f v1 # Since we are already on releases/v1 we don't need a ref. This will tag HEAD of releases/v1.

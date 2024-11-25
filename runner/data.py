@@ -50,6 +50,7 @@ class Test:
     name: str
     status: Status = Status.PASS
     message: Message = None
+    test_code: str = ""
     score: float = 0.0
 
     linter_convention = 0

@@ -11,7 +11,11 @@ import json
 import shutil
 import sys
 
+from io import StringIO
+
 from pylint.lint import Run as PylintRun
+from pylint.reporters.text import TextReporter
+
 import timeout_decorator
 
 from io import StringIO
@@ -54,10 +58,16 @@ def run(
 
     total_score = 0
     for arg in args:
-        pylint_results = PylintRun(run_args + [arg], exit=False).linter.stats
-        # print("STATS", pylint_results)
+        print(f"*** Linting: {' '.join(run_args + [arg])}")
+
+        pylint_output = StringIO()  # Custom open stream
+        reporter = TextReporter(pylint_output)
+
+        pylint_results = PylintRun(run_args + [arg], reporter=reporter, exit=False).linter.stats
 
         test = Test(arg)
+
+        test.test_code = pylint_output.getvalue().strip()
         test.linter_convention = pylint_results.convention
         test.linter_error = pylint_results.error
         test.linter_fatal = pylint_results.fatal
@@ -70,18 +80,23 @@ def run(
             pylint_results.global_note * pylint_results.statement / 10.0 * max_score
         )
 
-        if test.linter_fatal:
-            test.fail()
+        # We don't want to linter errors break the output, rather show a fail
+
+        # if test.linter_fatal:
+        #     test.fail()
+        #
+        # if test.linter_error:
+        #     test.error()
 
         if test.linter_error:
-            test.error()
+            test.fail()
 
         tests.append(test)
 
-    total_wight = sum(c.linter_statement for c in tests)
+    total_weight = sum(c.linter_statement for c in tests)
     for test in tests:
         try:
-            test.score = test.score / total_wight
+            test.score = test.score / total_weight
             total_score += test.score
         except ZeroDivisionError:
             pass
